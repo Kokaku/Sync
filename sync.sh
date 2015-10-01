@@ -6,7 +6,6 @@ folders=("./")
 
 while [ -n "$folders" ]; do
     folder=$folders[1]
-    hash=
     folders=("${folders[@]:1}")
     echo "folder $folder"
     #search for files finishing by our extention in our current directory
