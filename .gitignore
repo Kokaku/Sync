@@ -1,3 +1,7 @@
+#Shell script dependant
+hashes
+oldHashes
+
 # Folder view configuration files
 .DS_Store
 Desktop.ini
