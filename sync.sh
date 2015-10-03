@@ -41,45 +41,49 @@ if [ -z "$timeCmd" ]; then
     timeCmd="stat -c %Y"
 fi
 
-if [ -e oldHashes ] ; then
+if [ -e oldHashes ]; then
     `rm -r oldHashes`
 fi
-if [ -e hashes ] ; then
+if [ -e hashes ]; then
     `mv hashes oldHashes`
 fi
 `touch hashes`
 
-#browse file in current folder
-for file in `find "$folder" -type f` ; do
-    #if it is a file sync. If it is a folder add in the to process folder list
-    if [ -f "$file" ]; then
-        #if we cannot read the file print a warning
-        if [ -r "$file" ]; then
-            #print filename of the currently processed file
-            if [ "$verbose" = "1" ]; then
-                echo "$file"
-            fi
+#browse file in selected folder
+for file in "`find "$folder" -type f`" ; do
+    #if we cannot read the file print a warning
+    if [ -r "$file" ]; then
+        #print filename of processing file
+        if [ "$verbose" = "1" ]; then
+            echo "$file"
+        fi
 
-            cmd="$timeCmd \"$file\""
-            eval time=\$\($cmd\)
+        #retrieve file date
+        cmd="$timeCmd \"$file\""
+        eval time=\$\($cmd\)
+        #print file date
+        if [ "$verbose" = "1" ]; then
             echo "$time"
+        fi
 
-            #compute hash
-            cmd="$command \"$file\""
-            eval hashValue=\$\($cmd\)
-            hashValue=`echo "$hashValue"|cut -d' ' -f1`
-            #print computed hash
-            if [ "$verbose" = "1" ]; then
-                echo "$hashValue"
-            fi
+        #compute hash
+        cmd="$command \"$file\""
+        eval hashValue=\$\($cmd\)
+        hashValue=`echo "$hashValue"|cut -d' ' -f1`
+        #print computed hash
+        if [ "$verbose" = "1" ]; then
+            echo "$hashValue"
+        fi
 
-            echo "$file" >> hashes
-            echo "$time" >> hashes
-            echo "$hashValue" >> hashes
-        else
-            if [ "$verbose" = "1" ]; then
-                echo "Permission denied: $file"
-            fi
+        #write in hashes file
+        echo "$file" >> hashes
+        echo "$time" >> hashes
+        echo "$hashValue" >> hashes
+    else
+        if [ "$verbose" = "1" ]; then
+            echo "Permission denied: $file"
         fi
     fi
 done
+
+`rm -r oldHashes`
