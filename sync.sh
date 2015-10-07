@@ -49,8 +49,9 @@ if [ -e hashes ]; then
 fi
 `touch hashes`
 
+IFS=$'\n'
 #browse file in selected folder
-for file in "`find "$folder" -type f`" ; do
+for file in `find "$folder" -type f` ; do
     #if we cannot read the file print a warning
     if [ -r "$file" ]; then
         #print filename of processing file
@@ -86,4 +87,6 @@ for file in "`find "$folder" -type f`" ; do
     fi
 done
 
-`rm -r oldHashes`
+if [ -e oldHashes ]; then
+    `rm -r oldHashes`
+fi
